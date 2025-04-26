@@ -3,22 +3,23 @@ package com.whittingtontech.accounting
 import java.time.*
 import java.util.Locale
 
-interface TimesheetEntry {
-    val payrollItem: PayrollItem
-    val serviceItem: ServiceItem?
-    val customerJob: CustomerJob?
-    val hours: TimesheetEntryHours
-    fun totalHours(): Duration
-    val billable: Boolean
+data class TimesheetEntry(
+        val payrollItem: PayrollItem,
+        val serviceItem: ServiceItem?,
+        val customerJob: CustomerJob?,
+        val hours: TimesheetEntryHours,
+        val billable: Boolean
+) {
+    fun totalHours(): Duration = hours.total()
 }
 
-interface Timesheet {
-    val belongsTo: Person
-    val sheetStart: LocalDate
-    val sheetEnd: LocalDate
-    val entries: MutableList<TimesheetEntry>
-    val totalHours: TimesheetEntryHours
-}
+data class Timesheet(
+        val belongsTo: Person,
+        val sheetStart: LocalDate,
+        val sheetEnd: LocalDate,
+        val entries: MutableList<TimesheetEntry>,
+        val totalHours: TimesheetEntryHours
+)
 
 data class TimesheetEntryHours(val dailyHours: Map<DayOfWeek, Duration>) {
     fun total(): Duration {
