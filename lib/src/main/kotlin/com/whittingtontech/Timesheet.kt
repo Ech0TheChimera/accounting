@@ -62,13 +62,13 @@ enum class ServiceItem {
     ADMIN
 }
 
-interface CustomerJob {
-    val id: String
-    val name: String
-    val address: String
-    val contact: String?
-    val type: JobType
-}
+data class CustomerJob(
+        val id: String,
+        val name: String,
+        val address: String,
+        val contact: String?,
+        val type: JobType
+)
 
 enum class JobType {
     COMMERCIAL,
