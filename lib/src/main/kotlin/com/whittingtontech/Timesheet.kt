@@ -20,9 +20,14 @@ interface Timesheet {
     val totalHours: TimesheetEntryHours
 }
 
-interface TimesheetEntryHours {
-    val dailyHours: MutableMap<DayOfWeek, Duration>
-    fun total(): Duration
+data class TimesheetEntryHours(val dailyHours: Map<DayOfWeek, Duration>) {
+    fun total(): Duration {
+        var t: Duration = Duration.ofHours(0)
+        for (v in dailyHours.values) {
+            t = v.plus(t)
+        }
+        return t
+    }
 }
 
 data class Person(
