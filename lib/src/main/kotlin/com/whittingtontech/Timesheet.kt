@@ -1,35 +1,45 @@
 package com.whittingtontech.accounting
 
-import java.util.Date
+import java.time.*
+import java.util.Locale
 
 interface TimesheetEntry {
     val payrollItem: PayrollItem
     val serviceItem: ServiceItem?
     val customerJob: CustomerJob?
     val hours: TimesheetEntryHours
-    fun totalHours(): Double
+    fun totalHours(): Duration
     val billable: Boolean
 }
 
 interface Timesheet {
-    val belongsTo: Name
-    val sheetStart: Date
-    val sheetEnd: Date
+    val belongsTo: Person
+    val sheetStart: LocalDate
+    val sheetEnd: LocalDate
     val entries: MutableList<TimesheetEntry>
     val totalHours: TimesheetEntryHours
 }
 
 interface TimesheetEntryHours {
-    val dailyHours: MutableMap<DayOfWeek, Double>
-    fun total(): Double
+    val dailyHours: MutableMap<DayOfWeek, Duration>
+    fun total(): Duration
 }
 
-interface Name {
-    val first: String
-    val last: String
-    val honorific: String?
-    val middleInitial: Char?
-    val title: String?
+data class Person(
+        val first: String,
+        val last: String,
+        val honorific: String? = null,
+        val middleInitial: Char? = null,
+        val title: String? = null
+) {
+    fun displayName(locale: Locale = Locale.getDefault()): String =
+            buildString {
+                        honorific?.let { append(it).append(' ') }
+                        append(first.capitalize(locale)).append(' ')
+                        middleInitial?.let { append(it).append(". ") }
+                        append(last.capitalize(locale))
+                    }
+                    .trim()
 }
 
 enum class PayrollItem {
@@ -54,17 +64,7 @@ interface CustomerJob {
     val type: JobType
 }
 
-enum class DayOfWeek {
-    MONDAY,
-    TUESDAY,
-    WEDNESDAY,
-    THURSDAY,
-    FRIDAY,
-    SATURDAY,
-    SUNDAY
-}
-
 enum class JobType {
     COMMERCIAL,
-    RESEDENTIAL
+    RESIDENTIAL
 }
